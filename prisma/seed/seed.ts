@@ -26,7 +26,7 @@ async function main() {
     create: {
       name: 'Admin User',
       email: 'admin@company.com',
-      password: '$2b$10$YourHashedPasswordHere', // Use bcrypt hash for "123456"
+      password: '$2b$10$j8LupH3Vb5TaetgumKx1e.8xAizKC.GCfHOdKuBuyyk5NHtgWUtf6', 
       role: 'ADMIN',
       tenantId: tenant.id,
     },
