@@ -63,7 +63,7 @@ export class InvoicesService {
       // Create accounting entries (Journal Entry)
       // Debit: Accounts Receivable (1100)
       // Credit: Deferred Revenue (2000)
-      const journalEntry = await prisma.journalEntry.create({
+      await prisma.journalEntry.create({
         data: {
           description: `Invoice ${invoiceNumber} for ${subscription.customer.name}`,
           reference: invoice.id,
@@ -84,9 +84,6 @@ export class InvoicesService {
           },
         },
       });
-
-      // Link journal entry to invoice
-      // Note: We need to add journalEntryId to Invoice model or handle differently
 
       return invoice;
     });
@@ -159,7 +156,7 @@ export class InvoicesService {
       },
     });
 
-    const results = [];
+    const results: any[] = [];
 
     for (const subscription of subscriptions) {
       // Check if invoice already exists for this month
@@ -182,11 +179,20 @@ export class InvoicesService {
           amount: Number(subscription.plan.price),
           tax: 0,
         });
-        results.push(invoice);
+        results.push({
+          subscriptionId: subscription.id,
+          customerName: subscription.customer.name,
+          planName: subscription.plan.name,
+          amount: Number(subscription.plan.price),
+          invoice: invoice,
+        });
       }
     }
 
-    return results;
+    return {
+      message: `Generated ${results.length} invoices`,
+      results,
+    };
   }
 
   async markAsSent(tenantId: string, id: string) {
