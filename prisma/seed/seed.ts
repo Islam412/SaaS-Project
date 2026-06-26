@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, AccountType } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Starting seeding...');
 
-  // 1. Create Tenant
+  // 1. Create or update Tenant
   const tenant = await prisma.tenant.upsert({
     where: { email: 'admin@company.com' },
     update: {},
@@ -17,122 +17,104 @@ async function main() {
     },
   });
 
-  console.log('✅ Tenant created:', tenant.id);
+  console.log('✅ Tenant created/updated:', tenant.id);
 
-  // 2. Create Admin User
+  // 2. Create or update Admin User
   const admin = await prisma.user.upsert({
     where: { email: 'admin@company.com' },
     update: {},
     create: {
       name: 'Admin User',
       email: 'admin@company.com',
-      password: '$2b$10$j8LupH3Vb5TaetgumKx1e.8xAizKC.GCfHOdKuBuyyk5NHtgWUtf6', 
+      password: '$2b$10$j8LupH3Vb5TaetgumKx1e.8xAizKC.GCfHOdKuBuyyk5NHtgWUtf6',
       role: 'ADMIN',
       tenantId: tenant.id,
     },
   });
 
-  console.log('✅ Admin user created:', admin.id);
+  console.log('✅ Admin user created/updated:', admin.id);
 
-  // 3. Create Accounts (Chart of Accounts)
-  const accounts = await prisma.account.createMany({
-    data: [
-      {
-        code: '1000',
-        name: 'Cash',
-        type: 'ASSET',
-        balance: 0,
-        tenantId: tenant.id,
-      },
-      {
-        code: '1100',
-        name: 'Accounts Receivable',
-        type: 'ASSET',
-        balance: 0,
-        tenantId: tenant.id,
-      },
-      {
-        code: '2000',
-        name: 'Deferred Revenue',
-        type: 'LIABILITY',
-        balance: 0,
-        tenantId: tenant.id,
-      },
-      {
-        code: '4000',
-        name: 'Subscription Revenue',
-        type: 'REVENUE',
-        balance: 0,
-        tenantId: tenant.id,
-      },
-    ],
-  });
+  // 3. Create Accounts (Chart of Accounts) - using upsert for each
+  const accountData: { code: string; name: string; type: AccountType }[] = [
+    { code: '1000', name: 'Cash', type: AccountType.ASSET },
+    { code: '1100', name: 'Accounts Receivable', type: AccountType.ASSET },
+    { code: '2000', name: 'Deferred Revenue', type: AccountType.LIABILITY },
+    { code: '4000', name: 'Subscription Revenue', type: AccountType.REVENUE },
+  ];
 
-  console.log(`✅ ${accounts.count} accounts created`);
+  for (const acc of accountData) {
+    await prisma.account.upsert({
+      where: { 
+        code: acc.code 
+      },
+      update: {},
+      create: {
+        code: acc.code,
+        name: acc.name,
+        type: acc.type,
+        balance: 0,
+        tenantId: tenant.id,
+      },
+    });
+  }
+
+  console.log(`✅ ${accountData.length} accounts created/updated`);
 
   // 4. Create Subscription Plans
-  const plans = await prisma.subscriptionPlan.createMany({
-    data: [
-      {
-        name: 'Bronze Plan',
-        description: 'Basic plan for small businesses',
-        price: 100,
-        currency: 'USD',
-        billingCycle: 'MONTHLY',
-        tenantId: tenant.id,
-      },
-      {
-        name: 'Silver Plan',
-        description: 'Standard plan for growing businesses',
-        price: 250,
-        currency: 'USD',
-        billingCycle: 'MONTHLY',
-        tenantId: tenant.id,
-      },
-      {
-        name: 'Gold Plan',
-        description: 'Premium plan for large businesses',
-        price: 500,
-        currency: 'USD',
-        billingCycle: 'MONTHLY',
-        tenantId: tenant.id,
-      },
-    ],
-  });
+  const planData = [
+    { name: 'Bronze Plan', description: 'Basic plan for small businesses', price: 100 },
+    { name: 'Silver Plan', description: 'Standard plan for growing businesses', price: 250 },
+    { name: 'Gold Plan', description: 'Premium plan for large businesses', price: 500 },
+  ];
 
-  console.log(`✅ ${plans.count} subscription plans created`);
+  for (const plan of planData) {
+    await prisma.subscriptionPlan.upsert({
+      where: { 
+        name_tenantId: {
+          name: plan.name,
+          tenantId: tenant.id
+        }
+      },
+      update: {},
+      create: {
+        name: plan.name,
+        description: plan.description,
+        price: plan.price,
+        currency: 'USD',
+        billingCycle: 'MONTHLY',
+        tenantId: tenant.id,
+      },
+    });
+  }
+
+  console.log(`✅ ${planData.length} subscription plans created/updated`);
 
   // 5. Create Customers
-  const customers = await prisma.customer.createMany({
-    data: [
-      {
-        name: 'John Doe',
-        email: 'john@example.com',
-        phone: '+123456789',
-        address: '456 Elm St',
-        tenantId: tenant.id,
-      },
-      {
-        name: 'Jane Smith',
-        email: 'jane@example.com',
-        phone: '+987654321',
-        address: '789 Oak St',
-        tenantId: tenant.id,
-      },
-      {
-        name: 'Bob Johnson',
-        email: 'bob@example.com',
-        phone: '+5551234567',
-        address: '321 Pine St',
-        tenantId: tenant.id,
-      },
-    ],
-  });
+  const customerData = [
+    { name: 'John Doe', email: 'john@example.com', phone: '+123456789', address: '456 Elm St' },
+    { name: 'Jane Smith', email: 'jane@example.com', phone: '+987654321', address: '789 Oak St' },
+    { name: 'Bob Johnson', email: 'bob@example.com', phone: '+5551234567', address: '321 Pine St' },
+  ];
 
-  console.log(`✅ ${customers.count} customers created`);
+  for (const cust of customerData) {
+    await prisma.customer.upsert({
+      where: { 
+        email_tenantId: {
+          email: cust.email,
+          tenantId: tenant.id
+        }
+      },
+      update: {},
+      create: {
+        ...cust,
+        tenantId: tenant.id,
+      },
+    });
+  }
+
+  console.log(`✅ ${customerData.length} customers created/updated`);
 
   // 6. Create Subscriptions
-  // Get customer IDs and plan IDs
   const allCustomers = await prisma.customer.findMany({
     where: { tenantId: tenant.id },
   });
@@ -142,18 +124,33 @@ async function main() {
   });
 
   if (allCustomers.length > 0 && allPlans.length > 0) {
-    const subscriptions = await prisma.subscription.createMany({
-      data: allCustomers.map((customer, index) => ({
-        customerId: customer.id,
-        planId: allPlans[index % allPlans.length].id,
-        tenantId: tenant.id,
-        startDate: new Date(),
-        status: 'ACTIVE',
-        autoRenew: true,
-      })),
-    });
+    for (let i = 0; i < allCustomers.length; i++) {
+      const customer = allCustomers[i];
+      const plan = allPlans[i % allPlans.length];
+      
+      // Check if subscription exists
+      const existingSub = await prisma.subscription.findFirst({
+        where: {
+          customerId: customer.id,
+          planId: plan.id,
+          tenantId: tenant.id,
+        },
+      });
 
-    console.log(`✅ ${subscriptions.count} subscriptions created`);
+      if (!existingSub) {
+        await prisma.subscription.create({
+          data: {
+            customerId: customer.id,
+            planId: plan.id,
+            tenantId: tenant.id,
+            startDate: new Date(),
+            status: 'ACTIVE',
+            autoRenew: true,
+          },
+        });
+      }
+    }
+    console.log(`✅ ${allCustomers.length} subscriptions created/updated`);
   }
 
   console.log('🎉 Seeding completed successfully!');
