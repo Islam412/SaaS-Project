@@ -13,6 +13,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { InvoicesModule } from './modules/invoices/invoices.module';
 import { PaymentsModule } from './modules/payments/payments.module';
+import { AccountingModule } from './modules/accounting/accounting.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     SubscriptionsModule,
     InvoicesModule,
     PaymentsModule,
+    AccountingModule,
   ],
   controllers: [AppController],
   providers: [
