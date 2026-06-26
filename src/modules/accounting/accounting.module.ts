@@ -3,7 +3,8 @@ import { AccountingService } from './accounting.service';
 import { AccountingController } from './accounting.controller';
 
 @Module({
+  controllers: [AccountingController],
   providers: [AccountingService],
-  controllers: [AccountingController]
+  exports: [AccountingService],
 })
 export class AccountingModule {}
