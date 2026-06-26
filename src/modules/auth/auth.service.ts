@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RegisterTenantDto } from './dto/register-tenant.dto';
 import { LoginDto } from './dto/login.dto';
+import { AccountType } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -58,38 +59,28 @@ export class AuthService {
       });
 
       // Create default accounts for the tenant (Chart of Accounts)
-      await prisma.account.createMany({
-        data: [
-          {
-            code: '1000',
-            name: 'Cash',
-            type: 'ASSET',
+      const accountData: { code: string; name: string; type: AccountType }[] = [
+        { code: '1000', name: 'Cash', type: AccountType.ASSET },
+        { code: '1100', name: 'Accounts Receivable', type: AccountType.ASSET },
+        { code: '2000', name: 'Deferred Revenue', type: AccountType.LIABILITY },
+        { code: '4000', name: 'Subscription Revenue', type: AccountType.REVENUE },
+      ];
+
+      for (const acc of accountData) {
+        await prisma.account.upsert({
+          where: {
+            code: acc.code,
+          },
+          update: {},
+          create: {
+            code: acc.code,
+            name: acc.name,
+            type: acc.type,
             balance: 0,
             tenantId: tenant.id,
           },
-          {
-            code: '1100',
-            name: 'Accounts Receivable',
-            type: 'ASSET',
-            balance: 0,
-            tenantId: tenant.id,
-          },
-          {
-            code: '2000',
-            name: 'Deferred Revenue',
-            type: 'LIABILITY',
-            balance: 0,
-            tenantId: tenant.id,
-          },
-          {
-            code: '4000',
-            name: 'Subscription Revenue',
-            type: 'REVENUE',
-            balance: 0,
-            tenantId: tenant.id,
-          },
-        ],
-      });
+        });
+      }
 
       return { tenant, user };
     });

@@ -1,0 +1,660 @@
+{
+  "info": {
+    "name": "SaaS Subscription Management API",
+    "description": "Complete API collection for SaaS Subscription Management System with Multi-Tenancy, Invoices, Payments, and Accounting",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register Tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Company\",\n  \"email\": \"admin@company.com\",\n  \"password\": \"123456\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"123 Main St\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@company.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"+123456789\",\n  \"address\": \"456 Elm St\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers",
+              "host": ["{{base_url}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers",
+              "host": ["{{base_url}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe Updated\",\n  \"phone\": \"+987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Subscription Plans",
+      "item": [
+        {
+          "name": "Create Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bronze Plan\",\n  \"description\": \"Basic plan for small businesses\",\n  \"price\": 100,\n  \"currency\": \"USD\",\n  \"billingCycle\": \"MONTHLY\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/plans",
+              "host": ["{{base_url}}"],
+              "path": ["plans"]
+            }
+          }
+        },
+        {
+          "name": "Get All Plans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/plans",
+              "host": ["{{base_url}}"],
+              "path": ["plans"]
+            }
+          }
+        },
+        {
+          "name": "Get Plan by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/plans/{{plan_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["plans", "{{plan_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Plan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bronze Plan Updated\",\n  \"price\": 150\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/plans/{{plan_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["plans", "{{plan_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/plans/{{plan_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["plans", "{{plan_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Subscriptions",
+      "item": [
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customer_id}}\",\n  \"planId\": \"{{plan_id}}\",\n  \"startDate\": \"2026-06-27T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subscriptions",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions"]
+            }
+          }
+        },
+        {
+          "name": "Get All Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/active",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Subscription by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/{{subscription_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions", "{{subscription_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Subscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/{{subscription_id}}/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions", "{{subscription_id}}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "Delete Subscription",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/{{subscription_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions", "{{subscription_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Invoices",
+      "item": [
+        {
+          "name": "Create Invoice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subscriptionId\": \"{{subscription_id}}\",\n  \"amount\": 100,\n  \"tax\": 0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/invoices",
+              "host": ["{{base_url}}"],
+              "path": ["invoices"]
+            }
+          }
+        },
+        {
+          "name": "Generate Monthly Invoices",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/invoices/generate-monthly",
+              "host": ["{{base_url}}"],
+              "path": ["invoices", "generate-monthly"]
+            }
+          }
+        },
+        {
+          "name": "Get All Invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/invoices",
+              "host": ["{{base_url}}"],
+              "path": ["invoices"]
+            }
+          }
+        },
+        {
+          "name": "Get Invoice by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/invoices/{{invoice_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["invoices", "{{invoice_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Mark Invoice as Sent",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/invoices/{{invoice_id}}/sent",
+              "host": ["{{base_url}}"],
+              "path": ["invoices", "{{invoice_id}}", "sent"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Payments",
+      "item": [
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceId\": \"{{invoice_id}}\",\n  \"amount\": 100,\n  \"method\": \"CASH\",\n  \"reference\": \"PAY-001\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": ["{{base_url}}"],
+              "path": ["payments"]
+            }
+          }
+        },
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": ["{{base_url}}"],
+              "path": ["payments"]
+            }
+          }
+        },
+        {
+          "name": "Get Payment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments/{{payment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "{{payment_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Accounting",
+      "item": [
+        {
+          "name": "Get Journal Entries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/accounting/journal-entries",
+              "host": ["{{base_url}}"],
+              "path": ["accounting", "journal-entries"]
+            }
+          }
+        },
+        {
+          "name": "Get Balance Sheet",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/accounting/balance-sheet",
+              "host": ["{{base_url}}"],
+              "path": ["accounting", "balance-sheet"]
+            }
+          }
+        },
+        {
+          "name": "Get Income Statement",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/accounting/income-statement",
+              "host": ["{{base_url}}"],
+              "path": ["accounting", "income-statement"]
+            }
+          }
+        },
+        {
+          "name": "Recognize Revenue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/accounting/recognize-revenue",
+              "host": ["{{base_url}}"],
+              "path": ["accounting", "recognize-revenue"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "plan_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "subscription_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "invoice_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "payment_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
